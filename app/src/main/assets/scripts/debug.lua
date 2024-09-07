@@ -1,10 +1,11 @@
 require('common')
 local inspect = require('inspect')
 
-kb = luausb.create({ type = "keyboard" })
+local kb = luausb.create({ type = "keyboard" }) --[[@as KeyboardDev]]
 
 wait(1000)
 
+local test
 while true do
     while true do
         test = kb:read_lock()

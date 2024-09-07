@@ -6,7 +6,6 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.netdex.androidusbscript.configfs.*;
 import org.netdex.androidusbscript.configfs.function.*;
 import org.netdex.androidusbscript.function.HidDescriptor;
-import org.netdex.androidusbscript.function.HidInput.*;
 import org.netdex.androidusbscript.task.LuaIOBridge;
 import org.netdex.androidusbscript.util.FileSystem;
 
@@ -40,15 +39,6 @@ public class LuaUsbLibrary implements AutoCloseable {
         globals.set(library.name(), library.call());
         for (LuaFunction f : new LuaFunction[]{new wait(), new print(), new confirm(), new prompt()}) {
             globals.set(f.name(), f);
-        }
-        for (Keyboard.Key ikk : Keyboard.Key.values()) {
-            globals.set(ikk.name(), ikk.code);
-        }
-        for (Keyboard.Mod ikm : Keyboard.Mod.values()) {
-            globals.set(ikm.name(), ikm.code);
-        }
-        for (Mouse.Button imb : Mouse.Button.values()) {
-            globals.set(imb.name(), imb.code);
         }
     }
 

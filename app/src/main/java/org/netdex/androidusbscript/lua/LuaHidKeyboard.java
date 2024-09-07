@@ -1,7 +1,5 @@
 package org.netdex.androidusbscript.lua;
 
-import static org.netdex.androidusbscript.function.HidInput.Keyboard.Mod.MOD_LSHIFT;
-import static org.netdex.androidusbscript.function.HidInput.Keyboard.Mod.MOD_NONE;
 import static org.netdex.androidusbscript.lua.LuaUsbLibrary.checkbyte;
 
 import org.luaj.vm2.LuaError;
@@ -16,11 +14,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public class LuaHidKeyboard extends DeviceStream {
+    private static final byte KB_MOD_NONE = 0x0;
+    private static final byte KB_MOD_LSHIFT = 0x2;
 
     public LuaHidKeyboard(FileSystem fs, Path devicePath) {
         super(fs, devicePath);
     }
-
     /**
      * A        B        C        D        E        F        G        H
      * XXXXXXXX 00000000 XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
@@ -47,7 +46,7 @@ public class LuaHidKeyboard extends DeviceStream {
             LuaHidKeyboard hid = (LuaHidKeyboard) args.arg1().checkuserdata();
 
             byte[] a = new byte[args.narg()];
-            a[0] = MOD_NONE.code;
+            a[0] = KB_MOD_NONE;
             for (int i = 2; i <= args.narg(); ++i) {
                 a[i - 1] = checkbyte(args.arg(i).checkint());
             }
@@ -119,7 +118,7 @@ public class LuaHidKeyboard extends DeviceStream {
             if (cd == -1)
                 throw new IllegalArgumentException("Given string contains illegal characters");
             if (lcd == cd) raw();
-            raw(st ? MOD_LSHIFT.code : MOD_NONE.code, cd);
+            raw(st ? KB_MOD_LSHIFT : KB_MOD_NONE, cd);
             if (d > 0) {
                 Thread.sleep(d);
             }

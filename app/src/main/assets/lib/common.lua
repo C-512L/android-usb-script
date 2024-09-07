@@ -1,46 +1,52 @@
----
+--!strict
+---@diagnostic disable: lowercase-global
 --- Common library functions
----
+--- @module "meta"
 
--- Wait for the system to detect us by polling for the first output report
+require('hid')
+
+--- Wait for USB keyboard detection
+---@param kb KeyboardDev
 function wait_for_detect(kb)
-    while true do
-        local lock = kb:read_lock()
-        if lock ~= nil then
-            return lock
-        end
-        wait(100)
+  while true do
+    local lock = kb:read_lock()
+    if lock ~= nil then
+      return lock
     end
-end
-
-function wait_for_state(state)
-    while luausb.state() ~= state do
-        wait(100)
-    end
-end
-
--- make it really obvious when a script is done running
-function flash(kb)
-    kb:press(KEY_NUMLOCK)
-
     wait(100)
-    local lock
-    while true do
-        local val = kb:read_lock()
-        if val == nil then break end
-        lock = val
-    end
-    if lock == nil then return end
+  end
+end
 
-    if lock.num_lock then kb:press(KEY_NUMLOCK) end
-    if lock.caps_lock then kb:press(KEY_CAPSLOCK) end
-    if lock.scroll_lock then kb:press(KEY_SCROLLLOCK) end
+---Wait for certain USB state
+---@param state UsbState
+function wait_for_state(state)
+  while luausb.state() ~= state do
+    wait(100)
+  end
+end
 
-    local state = luausb.state()
-    while luausb.state() == state do
-        kb:press(KEY_NUMLOCK, KEY_CAPSLOCK, KEY_SCROLLLOCK)
-        wait(50)
-        kb:press(KEY_NUMLOCK, KEY_CAPSLOCK, KEY_SCROLLLOCK)
-        wait(950)
-    end
+--- Make it really obvious when a script is done running
+--- @param kb KeyboardDev
+function flash(kb)
+  kb:press(Keyboard.Key.NUM_LOCK)
+  wait(100)
+  local lock
+  while true do
+    local val = kb:read_lock()
+    if val == nil then break end
+    lock = val
+  end
+  if lock == nil then return end
+
+  if lock.num_lock then kb:press(Keyboard.Key.NUM_LOCK) end
+  if lock.caps_lock then kb:press(Keyboard.Key.CAPS_LOCK) end
+  if lock.scroll_lock then kb:press(Keyboard.Key.SCROLL_LOCK) end
+
+  local state = luausb.state()
+  while luausb.state() == state do
+    kb:press(Keyboard.Key.NUM_LOCK, Keyboard.Key.CAPS_LOCK, Keyboard.Key.SCROLL_LOCK)
+    wait(50)
+    kb:press(Keyboard.Key.NUM_LOCK, Keyboard.Key.CAPS_LOCK, Keyboard.Key.SCROLL_LOCK)
+    wait(950)
+  end
 end

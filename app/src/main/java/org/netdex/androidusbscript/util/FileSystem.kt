@@ -1,6 +1,7 @@
 package org.netdex.androidusbscript.util
 
 import com.topjohnwu.superuser.ShellUtils
+import com.topjohnwu.superuser.nio.ExtendedFile
 import com.topjohnwu.superuser.nio.FileSystemManager
 import timber.log.Timber
 import java.io.BufferedReader
@@ -12,16 +13,16 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 
 class FileSystem(private val remoteFs: FileSystemManager) {
-    @Throws(IOException::class)
-    fun inputStream(path: Path): InputStream {
-        val file = remoteFs.getFile(path.toString())
-        return file.newInputStream()
-    }
 
     @Throws(IOException::class)
     fun outputStream(path: Path): OutputStream {
         val file = remoteFs.getFile(path.toString())
         return file.newOutputStream()
+    }
+
+    @Throws(IOException::class)
+    fun getFile(path: Path): ExtendedFile {
+        return remoteFs.getFile(path.toString())
     }
 
     @Throws(IOException::class)

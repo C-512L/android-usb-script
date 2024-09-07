@@ -2,6 +2,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
+    aaptOptions {
+        ignoreAssetsPattern "!lib/meta.lua"
+    }
     compileSdk 35
     defaultConfig {
         applicationId "org.netdex.androidusbscript"
